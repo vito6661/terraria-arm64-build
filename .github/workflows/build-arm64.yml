@@ -25,7 +25,7 @@ jobs:
             arm64v8/fedora:latest bash -c '
             
             dnf update -y
-            dnf install -y gcc gcc-c++ make cmake git SDL2-devel
+            dnf install -y gcc gcc-c++ make cmake git SDL2-devel SDL3-devel
             
             mkdir -p /workspace/output
             
