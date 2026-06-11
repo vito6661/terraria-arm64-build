@@ -44,12 +44,12 @@ jobs:
             
             make -j$(nproc)
             
-            if [ -f "src/libFNA3D.so" ]; then
-              cp src/libFNA3D.so /workspace/output/libFNA3D.so.0
+            if [ -f "./libFNA3D.so" ]; then
+              cp ./libFNA3D.so /workspace/output/libFNA3D.so.0
               echo "✓ FNA3D compiled successfully"
             else
               echo "✗ FNA3D compilation FAILED - libFNA3D.so not found"
-              find . -name "*.so" -o -name "*.a" 2>/dev/null | head -20
+              find . -name "libFNA3D.so" -o -name "libFNA3D.a" 2>/dev/null
               exit 1
             fi
             
@@ -67,12 +67,12 @@ jobs:
             
             make -j$(nproc)
             
-            if [ -f "src/libFAudio.so" ]; then
-              cp src/libFAudio.so /workspace/output/libFAudio.so.0
+            if [ -f "./libFAudio.so" ]; then
+              cp ./libFAudio.so /workspace/output/libFAudio.so.0
               echo "✓ FAudio compiled successfully"
             else
               echo "✗ FAudio compilation FAILED - libFAudio.so not found"
-              find . -name "*.so" -o -name "*.a" 2>/dev/null | head -20
+              find . -name "libFAudio.so" -o -name "libFAudio.a" 2>/dev/null
               exit 1
             fi
             
