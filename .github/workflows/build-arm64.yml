@@ -1,0 +1,64 @@
+name: Build Terraria ARM64 Libraries
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build FNA3D and FAudio for ARM64
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace \
+            --platform linux/arm64 \
+            arm64v8/fedora:latest bash -c '
+            
+            dnf update -y
+            dnf install -y gcc gcc-c++ make cmake git SDL2-devel
+            
+            mkdir -p /workspace/output
+            
+            echo "=== Building FNA3D ==="
+            cd /workspace
+            git clone --recurse-submodules https://github.com/FNA-XNA/FNA3D
+            cd FNA3D
+            git checkout fcfab155c129fde38f9fab957345759bcaf96454
+            mkdir build && cd build
+            cmake ../
+            make -j$(nproc)
+            cp src/libFNA3D.so /workspace/output/libFNA3D.so.0
+            
+            echo "=== Building FAudio ==="
+            cd /workspace
+            git clone https://github.com/FNA-XNA/FAudio
+            cd FAudio
+            git checkout 2cc9baafc7bf9ae524a61e9f8250883500a9820a
+            mkdir build && cd build
+            cmake ../
+            make -j$(nproc)
+            cp src/libFAudio.so /workspace/output/libFAudio.so.0
+            
+            echo "=== Copying SDL2 ==="
+            cp /usr/lib64/libSDL2-2.0.so.0 /workspace/output/libSDL2-2.0.so.0
+            
+            echo "=== Files ready ==="
+            ls -lah /workspace/output/
+            '
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraria-arm64-libs
+          path: output/
+          retention-days: 30
