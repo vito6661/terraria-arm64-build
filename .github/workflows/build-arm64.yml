@@ -35,15 +35,21 @@ jobs:
             cd FNA3D
             git checkout fcfab155c129fde38f9fab957345759bcaf96454
             mkdir build && cd build
-            cmake ../ -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
+            cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+            
+            if [ $? -ne 0 ]; then
+              echo "✗ FNA3D CMAKE FAILED"
+              exit 1
+            fi
+            
             make -j$(nproc)
             
             if [ -f "src/libFNA3D.so" ]; then
               cp src/libFNA3D.so /workspace/output/libFNA3D.so.0
               echo "✓ FNA3D compiled successfully"
             else
-              echo "✗ FNA3D compilation FAILED"
-              ls -la src/
+              echo "✗ FNA3D compilation FAILED - libFNA3D.so not found"
+              find . -name "*.so" -o -name "*.a"
               exit 1
             fi
             
@@ -53,15 +59,21 @@ jobs:
             cd FAudio
             git checkout 2cc9baafc7bf9ae524a61e9f8250883500a9820a
             mkdir build && cd build
-            cmake ../ -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
+            cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+            
+            if [ $? -ne 0 ]; then
+              echo "✗ FAudio CMAKE FAILED"
+              exit 1
+            fi
+            
             make -j$(nproc)
             
             if [ -f "src/libFAudio.so" ]; then
               cp src/libFAudio.so /workspace/output/libFAudio.so.0
               echo "✓ FAudio compiled successfully"
             else
-              echo "✗ FAudio compilation FAILED"
-              ls -la src/
+              echo "✗ FAudio compilation FAILED - libFAudio.so not found"
+              find . -name "*.so" -o -name "*.a"
               exit 1
             fi
             
