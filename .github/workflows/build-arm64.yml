@@ -35,9 +35,17 @@ jobs:
             cd FNA3D
             git checkout fcfab155c129fde38f9fab957345759bcaf96454
             mkdir build && cd build
-            cmake ../
+            cmake ../ -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
             make -j$(nproc)
-            cp src/libFNA3D.so /workspace/output/libFNA3D.so.0
+            
+            if [ -f "src/libFNA3D.so" ]; then
+              cp src/libFNA3D.so /workspace/output/libFNA3D.so.0
+              echo "✓ FNA3D compiled successfully"
+            else
+              echo "✗ FNA3D compilation FAILED"
+              ls -la src/
+              exit 1
+            fi
             
             echo "=== Building FAudio ==="
             cd /workspace
@@ -45,9 +53,17 @@ jobs:
             cd FAudio
             git checkout 2cc9baafc7bf9ae524a61e9f8250883500a9820a
             mkdir build && cd build
-            cmake ../
+            cmake ../ -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
             make -j$(nproc)
-            cp src/libFAudio.so /workspace/output/libFAudio.so.0
+            
+            if [ -f "src/libFAudio.so" ]; then
+              cp src/libFAudio.so /workspace/output/libFAudio.so.0
+              echo "✓ FAudio compiled successfully"
+            else
+              echo "✗ FAudio compilation FAILED"
+              ls -la src/
+              exit 1
+            fi
             
             echo "=== Copying SDL2 ==="
             cp /usr/lib64/libSDL2-2.0.so.0 /workspace/output/libSDL2-2.0.so.0
