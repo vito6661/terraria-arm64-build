@@ -31,9 +31,9 @@ jobs:
             
             echo "=== Building FNA3D ==="
             cd /workspace
-            git clone --recurse-submodules https://github.com/FNA-XNA/FNA3D
+            git clone https://github.com/FNA-XNA/FNA3D
             cd FNA3D
-            git checkout fcfab155c129fde38f9fab957345759bcaf96454
+            git submodule update --init --recursive
             mkdir build && cd build
             cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5
             
@@ -49,7 +49,7 @@ jobs:
               echo "✓ FNA3D compiled successfully"
             else
               echo "✗ FNA3D compilation FAILED - libFNA3D.so not found"
-              find . -name "*.so" -o -name "*.a"
+              find . -name "*.so" -o -name "*.a" 2>/dev/null | head -20
               exit 1
             fi
             
@@ -57,7 +57,6 @@ jobs:
             cd /workspace
             git clone https://github.com/FNA-XNA/FAudio
             cd FAudio
-            git checkout 2cc9baafc7bf9ae524a61e9f8250883500a9820a
             mkdir build && cd build
             cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5
             
@@ -73,7 +72,7 @@ jobs:
               echo "✓ FAudio compiled successfully"
             else
               echo "✗ FAudio compilation FAILED - libFAudio.so not found"
-              find . -name "*.so" -o -name "*.a"
+              find . -name "*.so" -o -name "*.a" 2>/dev/null | head -20
               exit 1
             fi
             
